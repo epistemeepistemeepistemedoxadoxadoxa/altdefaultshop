@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cart</title>
     <link rel="stylesheet" href="cart.css">
-    <!-- Square Web Payments SDK -->
-    <script src="https://sandbox.web.squarecdn.com/v1/square.js"></script>
+    <!-- Replace Square with Stripe JS -->
+    <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
     <div class="nav">
@@ -25,26 +25,125 @@
             <strong>Total: $<span id="total-price">0.00</span></strong>
         </div>
         <div id="checkout-container">
-            <div id="card-container"></div>
-            <button id="checkout-button" disabled>Check Back Later</button>
+            <form id="payment-form">
+                <div id="card-element"></div>
+                <div id="card-errors" role="alert"></div>
+                <button id="checkout-button" type="submit">
+                    <div class="spinner hidden" id="spinner"></div>
+                    <span id="button-text">Pay Now</span>
+                </button>
+            </form>
         </div>
     </div>
 
     <script>
+        // Initialize Stripe
+        const stripe = Stripe('pk_test_51Qmg9GPverr8pgwGXFCdgpuevj4yEpekUgBTeE0jMxYHATqhbpgCe5JgOycH28O1gGfD3rckc4itGuF7uxNqhJp9003qyt3ezp'); // Replace with your Stripe key
+        const elements = stripe.elements();
+
         document.addEventListener("DOMContentLoaded", () => {
             const cart = JSON.parse(localStorage.getItem("cart")) || [];
             const cartItemsContainer = document.getElementById("cart-items");
             const totalPriceElement = document.getElementById("total-price");
             const itemCountElement = document.getElementById("item-count-number");
+            const form = document.getElementById('payment-form');
 
             let totalPrice = 0;
 
-            // Function to update the cart in localStorage
+            // Create card Element
+            const card = elements.create('card', {
+                style: {
+                    base: {
+                        fontSize: '12px',
+                        color: '#000',
+                        fontFamily: 'sans-serif',
+                        '::placeholder': {
+                            color: '#666',
+                        },
+                    },
+                },
+            });
+
+            // Mount card Element
+            card.mount('#card-element');
+
+            // Handle real-time validation errors
+            card.addEventListener('change', function(event) {
+                const displayError = document.getElementById('card-errors');
+                if (event.error) {
+                    displayError.textContent = event.error.message;
+                } else {
+                    displayError.textContent = '';
+                }
+            });
+
+            // Handle form submission
+            form.addEventListener('submit', async function(event) {
+                event.preventDefault();
+
+                const button = document.getElementById('checkout-button');
+                const spinner = document.getElementById('spinner');
+                const buttonText = document.getElementById('button-text');
+
+                button.disabled = true;
+                spinner.classList.remove('hidden');
+                buttonText.classList.add('hidden');
+
+                try {
+                    // Create payment intent
+                    const response = await fetch('https://stripe-payment-backend-rtiu.onrender.com', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            amount: Math.round(totalPrice * 100),
+                            items: cart.map(item => ({
+                                fontName: item.fontName,
+                                quantity: item.quantity,
+                                licenseType: item.licensePrice ? `License +$${item.licensePrice}` : 'Personal Use'
+                            }))
+                        }),
+                    });
+
+                    const data = await response.json();
+
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+
+                    const { error: paymentError, paymentIntent } = await stripe.confirmCardPayment(
+                        data.clientSecret,
+                        {
+                            payment_method: {
+                                card: card,
+                            },
+                        }
+                    );
+
+                    if (paymentError) {
+                        throw new Error(paymentError.message);
+                    }
+
+                    if (paymentIntent.status === 'succeeded') {
+                        localStorage.removeItem('cart');
+                        window.location.href = 'index.html';
+                    }
+                } catch (error) {
+                    const errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = error.message;
+                } finally {
+                    button.disabled = false;
+                    spinner.classList.add('hidden');
+                    buttonText.classList.remove('hidden');
+                }
+            });
+
+            // Your existing cart functions
             function updateCart() {
                 localStorage.setItem("cart", JSON.stringify(cart));
             }
 
-            // Function to update the total price and item count
             function updateTotals() {
                 totalPrice = 0;
                 let itemCount = 0;
@@ -59,9 +158,8 @@
                 itemCountElement.textContent = itemCount;
             }
 
-            // Function to render cart items
             function renderCartItems() {
-                cartItemsContainer.innerHTML = ""; // Clear the container
+                cartItemsContainer.innerHTML = "";
                 cart.forEach((item, index) => {
                     const itemElement = document.createElement("div");
                     itemElement.className = "cart-item";
@@ -111,122 +209,63 @@
                                 <option value="contact">Online Advertising - Contact for pricing</option>
                                 <option value="contact">Student - Contact for pricing</option>
                             </select>
-                            <span class="license-price">+$0.00</span>
+                            <span class="license-price">+$${item.licensePrice || '0.00'}</span>
                         </div>
                     `;
+                    
                     cartItemsContainer.appendChild(itemElement);
+                    
+                    // Add event listeners
+                    attachEventListeners(itemElement, index, item);
+                });
+                
+                updateTotals();
+            }
 
-                    // Add event listener for quantity change
-                    const quantityInput = itemElement.querySelector(`#quantity-${index}`);
-                    quantityInput.addEventListener('change', () => {
-                        const newQuantity = parseInt(quantityInput.value);
-                        if (newQuantity === 0) {
-                            cart.splice(index, 1);
-                            updateCart();
-                            renderCartItems();
-                        } else {
-                            item.quantity = newQuantity;
-                            updateCart();
-                            updateTotals();
-                        }
-                    });
-
-                    // Add event listener for license selection
-                    const licenseSelect = itemElement.querySelector(`#license-${index}`);
-                    const licensePriceElement = itemElement.querySelector('.license-price');
-
-                    licenseSelect.addEventListener('change', () => {
-                        if (licenseSelect.value === "contact") {
-                            licensePriceElement.textContent = "Contact for pricing";
-                            item.licensePrice = 0;
-                            alert("Please contact us for pricing details for this license.");
-                        } else {
-                            const selectedPrice = parseFloat(licenseSelect.value);
-                            licensePriceElement.textContent = `+$${selectedPrice.toFixed(2)}`;
-                            item.licensePrice = selectedPrice;
-                        }
+            function attachEventListeners(itemElement, index, item) {
+                // Quantity change listener
+                const quantityInput = itemElement.querySelector(`#quantity-${index}`);
+                quantityInput.addEventListener('change', () => {
+                    const newQuantity = parseInt(quantityInput.value);
+                    if (newQuantity === 0) {
+                        cart.splice(index, 1);
+                        updateCart();
+                        renderCartItems();
+                    } else {
+                        item.quantity = newQuantity;
                         updateCart();
                         updateTotals();
-                    });
-
-                    // Initialize license price if it exists
-                    if (item.licensePrice) {
-                        licenseSelect.value = item.licensePrice;
-                        licensePriceElement.textContent = `+$${item.licensePrice.toFixed(2)}`;
-                    } else {
-                        licenseSelect.value = 0;
-                        licensePriceElement.textContent = "+$0.00";
                     }
-
-                    // Add event listener for Explore button
-                    const exploreButton = itemElement.querySelector('.explore-button');
-                    exploreButton.addEventListener('click', () => {
-                        const fontName = exploreButton.getAttribute('data-font');
-                        alert(`Exploring ${fontName}`);
-                    });
                 });
 
-                updateTotals();
+                // License selection listener
+                const licenseSelect = itemElement.querySelector(`#license-${index}`);
+                const licensePriceElement = itemElement.querySelector('.license-price');
+
+                licenseSelect.addEventListener('change', () => {
+                    if (licenseSelect.value === "contact") {
+                        licensePriceElement.textContent = "Contact for pricing";
+                        item.licensePrice = 0;
+                        alert("Please contact us for pricing details for this license.");
+                    } else {
+                        const selectedPrice = parseFloat(licenseSelect.value);
+                        licensePriceElement.textContent = `+$${selectedPrice.toFixed(2)}`;
+                        item.licensePrice = selectedPrice;
+                    }
+                    updateCart();
+                    updateTotals();
+                });
+
+                // Explore button listener
+                const exploreButton = itemElement.querySelector('.explore-button');
+                exploreButton.addEventListener('click', () => {
+                    const fontName = exploreButton.getAttribute('data-font');
+                    alert(`Exploring ${fontName}`);
+                });
             }
 
             // Initial render of cart items
             renderCartItems();
-
-            // Square Checkout Integration
-            async function initializeCheckout() {
-                if (!window.Square) {
-                    throw new Error('Square.js failed to load properly');
-                }
-
-                const payments = window.Square.payments('sq0idp-o9P_YfNZrVQKIlKPJw26_g', 'L4CVCS9X8T6SW');
-                
-                try {
-                    const card = await payments.card();
-                    await card.attach('#card-container');
-                    
-                    const button = document.getElementById('checkout-button');
-                    button.disabled = false;
-                    
-                    button.addEventListener('click', async () => {
-                        try {
-                            const result = await payments.tokenize(card);
-                            if (result.status === 'OK') {
-                                const response = await fetch('https://square-payment-backend.onrender.com', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify({
-                                        sourceId: result.token,
-                                        amount: Math.round(totalPrice * 100), // Convert to cents
-                                    }),
-                                });
-
-                                const data = await response.json();
-                                
-                                if (data.success) {
-                                    localStorage.removeItem("cart");
-                                    window.location.href = "index.html";
-                                } else {
-                                    throw new Error(data.error || 'Payment failed');
-                                }
-                            }
-                        } catch (e) {
-                            console.error('Payment failed:', e);
-                            alert('Payment failed. Please try again.');
-                        }
-                    });
-                } catch (e) {
-                    console.error('Failed to setup card:', e);
-                    alert('Failed to set up payment system. Please refresh the page.');
-                }
-            }
-
-            // Initialize the checkout
-            initializeCheckout().catch(err => {
-                console.error('Initialization failed:', err);
-                alert('Failed to initialize payment system. Please refresh the page.');
-            });
         });
     </script>
 </body>
