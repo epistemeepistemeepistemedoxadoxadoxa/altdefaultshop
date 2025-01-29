@@ -174,7 +174,7 @@ h1 {
 
 #card-element {
     padding: 15px;
-    margin-top: 20px;
+    margin-top: 20px !important;
     border: 1px solid #e5e5e5;
     background: white;
 }
