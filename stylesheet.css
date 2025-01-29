@@ -1,0 +1,18 @@
+@font-face {
+    font-family: 'Helvetica Neue Std CN Alt Default';
+    src: url('HelveticaNeueStdCNAltDefault-Regular.woff2') format('woff2'),
+        url('HelveticaNeueStdCNAltDefault-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Community Alternative';
+    src: url('CommunityAlternative-Regular.woff2') format('woff2'),
+        url('CommunityAlternative-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+

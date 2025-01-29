@@ -1,0 +1,202 @@
+/* General Styles */
+body {
+    margin: 0;
+    font-family: 'Times New Roman', Times, serif;
+    background-color: #bfbfbf;
+    color: #333;
+    display: flex;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+.nav {
+    display: flex;
+    justify-content: left;
+    background: #333;
+    left: 20px;
+    position: fixed;
+    width: 100vw;
+    z-index: 100;
+    top: 0;
+}
+
+h1 {
+    font-style: normal;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#item-count {
+    text-align: center;
+    font-size: 1.1em;
+    margin-bottom: 20px;
+}
+
+strong {
+    font-family: sans-serif;
+    font-style: italic;
+    font-weight: 500;
+}
+
+.nav a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    padding-right: 20vw;
+}
+
+.nav a:hover {
+    text-decoration: underline;
+}
+
+.cart-container {
+    padding: 120px 20px 20px; /* Adjust padding to account for the fixed nav */
+    max-width: 80vw;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #ccc;
+    flex-wrap: wrap;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.item-number {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.item-details {
+    flex: 1;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between font name and Explore button */
+}
+
+.font-name {
+    font-size: 1.2em;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 500;
+}
+
+.explore-button {
+    background: orangered;
+    color: white;
+    border: none;
+    padding: 0px 10px;
+    border-radius: 0px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.explore-button:hover {
+    background: linear-gradient(90deg, 
+        red, 
+        orange, 
+        yellow, 
+        green, 
+        blue, 
+        indigo, 
+        violet, 
+        red); /* Rainbow gradient */
+    background-size: 400% 400%;
+    animation: gradientLoop 4s linear infinite; /* Faster animation for hover */
+}
+
+.font-price {
+    font-size: 1.1em;
+    color: #555;
+}
+
+.quantity-selector {
+    margin-right: 20px;
+}
+
+.quantity-selector input {
+    width: 60px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.license-selection {
+    flex-basis: 100%;
+    margin-top: 10px;
+}
+
+.license-selection label {
+    margin-right: 10px;
+}
+
+.license-selection select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.license-selection select:hover {
+    border-color: #333;
+}
+
+.license-price {
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+#total {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.2em;
+}
+
+#checkout-button {
+    width: 50%; /* Set width to 50% */
+    margin-top: 20px;
+    padding: 15px;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.2em;
+    cursor: pointer;
+    background: linear-gradient(45deg, orangered, white, orangered, white, orangered);
+    background-size: 400% 400%;
+    animation: gradientLoop 10s linear infinite;
+    transition: all 0.1s ease;
+}
+
+#checkout-button:hover {
+    transform: scale(1.01); /* Slightly enlarge the button on hover */
+    background: linear-gradient(90deg, 
+        red, 
+        orange, 
+        yellow, 
+        green, 
+        blue, 
+        indigo, 
+        violet, 
+        red); /* Rainbow gradient */
+    background-size: 400% 400%;
+    animation: gradientLoop 4s linear infinite; /* Faster animation for hover */
+}
+
+@keyframes gradientLoop {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 200% 50%; /* Move twice as far to create a seamless loop */
+    }
+}

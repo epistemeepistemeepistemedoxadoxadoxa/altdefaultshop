@@ -1,0 +1,170 @@
+body {
+    margin: 0;
+    font-family: 'Times New Roman', Times, serif;
+    background-color: #bfbfbf;
+    color: #f1f1f1;
+  }
+  
+  .nav {
+    display: flex;
+    justify-content: left;
+    background: #333;
+    left: 20px; /* Left-align the text */
+    position: fixed;
+    width: 100vw;
+    z-index: 100; /* Add this line to ensure the nav is above other elements */
+  }
+  
+  h1 {
+    font-weight: 500;
+    font-size: 28pt;
+  }
+
+  p {
+    font-size: 10pt;
+    font-family: sans-serif;
+  }
+
+  a:visited {
+    color: orangered;
+  }
+
+  .nav a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    padding-right: 20vw;
+  }
+  
+  .nav a:hover {
+    text-decoration: underline;
+  }
+  
+  #background-text {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 0; /* Keep it below the freeform container */
+    text-align: left;
+    color: #f1f1f1;
+    font-size: 24px;
+    pointer-events: auto; /* Allow clicks on links */
+    max-width: 80vw;
+}
+
+
+  /* Freeform container styling */
+  .freeform-container {
+    position: relative;
+    width: 100vw;
+    min-height: 100vh;
+    height: auto;
+    overflow-y: auto;
+    cursor: grab;
+    z-index: 1; /* Keep it above the background text */
+    padding-bottom: 20px;
+    pointer-events: none; /* Allow clicks to pass through */
+  }
+
+
+  .freeform-item {
+    position: absolute;
+    cursor: grab;
+    margin: 20px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+    pointer-events: auto; /* Re-enable clicks for items */
+  }
+
+  
+  .freeform-item video,
+  .freeform-item img {
+    max-width: 450px; /* Increase default size */
+    min-width: 400px;
+    min-height: 350px; /* Ensure larger visuals */
+    border-radius: 8px;  
+  }
+  
+  .freeform-item:active {
+    cursor: grabbing;
+  }
+
+/* Modal container */
+#image-preview-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8); /* Black background with 80% opacity */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Initially hidden */
+#image-preview-modal.hidden {
+    display: none; /* Override display: flex when the modal is hidden */
+}
+
+/* Modal content */
+#modal-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 80vh; /* Set max height relative to viewport height */
+    background: rgba(255, 255, 255, 0.1); /* Optional: Add a subtle background for contrast */
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
+    overflow: auto; /* Add scroll if content exceeds max height */
+}
+
+/* Preview image */
+#preview-image {
+    max-width: 100%;
+    max-height: 80vh; /* Set max height relative to viewport height */
+    border-radius: 8px;
+}
+
+/* Video styling */
+#modal-content video {
+    max-width: 100%;
+    max-height: 80vh; /* Set max height relative to viewport height */
+    border-radius: 8px;
+}
+
+/* Hide the playhead and other controls */
+#modal-content video::-webkit-media-controls-timeline {
+    display: none !important; /* Hide the playhead in WebKit browsers */
+}
+
+#modal-content video::-webkit-media-controls-panel {
+    display: none !important; /* Hide all controls in WebKit browsers */
+}
+
+
+
+/* Close button */
+#close-modal {
+    position: fixed; /* Position the button relative to the viewport */
+    top: 20px; /* Adjust distance from the top */
+    right: 20px; /* Adjust distance from the right */
+    background: white;
+    color: black;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+    z-index: 1001; /* Ensure the button is above the modal content */
+}
+
+#close-modal:hover {
+    background: #ccc;
+}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Documentation</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="nav">
+      <a href="index.html">Documentation</a>
+      <a href="typefaces.html">Typefaces</a>
+      <a href="cart.html">Bag</a>
+    </div>
+
+    <!-- Text content in front of the grey background but behind the freeform-container -->
+    <div id="background-text">
+      <p>
+        Click and drag items to move them around freely. Click on any item to
+        open a larger preview. <br>
+        Use the close button or click outside the preview to return to the
+        gallery.<br>
+        Scroll ↓
+      </p>
+      <h1>
+        In the past few months, <a href="https://haggi.info/">Park West New York, New York</a> has developed a
+        series of tools that can be used to create vectors for typography and
+        illustration as well as page layouts and video. Documentation of this
+        process has mainly been through screenshots and screen recordings. The
+        programs have led to many outcomes, some of which can’t be transformed
+        into .otf or .ttf font files. I’ve decided to share some images captured
+        during the development process to help explain what the tools are
+        capable of and how I’ve been using them.<br><br>
+
+        A demo of an early version of a simple brush tool is available <a href="https://haggi.info/">here</a>.
+
+        <br><br><br>
+        Join the mailing list for updates on when<br>
+        the software will be made available.
+      </h1>
+    </div>
+
+    <!-- Documentation Page with Freeform Layout -->
+    <div id="documentation" class="freeform-container"></div>
+
+    <!-- Image Preview Modal -->
+    <div id="image-preview-modal" class="hidden">
+      <button id="close-modal">×</button>
+      <div id="modal-content">
+        <img id="preview-image" src="" alt="Preview" />
+      </div>
+    </div>
+
+    <script src="scripts.js"></script>
+  </body>
+</html>

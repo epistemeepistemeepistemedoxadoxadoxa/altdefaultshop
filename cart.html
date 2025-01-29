@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <link rel="stylesheet" href="cart.css">
+    <!-- Square Web Payments SDK -->
+    <script src="https://sandbox.web.squarecdn.com/v1/square.js"></script>
+</head>
+<body>
+    <div class="nav">
+        <a href="index.html">Documentation</a>
+        <a href="typefaces.html">Typefaces</a>
+        <a href="cart.html">Bag</a>
+    </div>
+
+    <div class="cart-container">
+        <h1>Bag</h1>
+        <p id="item-count">Items: <span id="item-count-number">0</span></p>
+        <div id="cart-items">
+            <!-- Cart items will be dynamically inserted here -->
+        </div>
+        <div id="total">
+            <strong>Total: $<span id="total-price">0.00</span></strong>
+        </div>
+        <div id="checkout-button-wrapper">
+            <button id="checkout-button">✓ Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const cartItemsContainer = document.getElementById("cart-items");
+            const totalPriceElement = document.getElementById("total-price");
+            const itemCountElement = document.getElementById("item-count-number");
+
+            let totalPrice = 0;
+
+            // Function to update the cart in localStorage
+            function updateCart() {
+                localStorage.setItem("cart", JSON.stringify(cart));
+            }
+
+            // Function to update the total price and item count
+            function updateTotals() {
+                totalPrice = 0;
+                let itemCount = 0;
+
+                cart.forEach(item => {
+                    const itemTotal = (item.price * item.quantity) + (item.licensePrice || 0);
+                    totalPrice += itemTotal;
+                    itemCount += item.quantity;
+                });
+
+                totalPriceElement.textContent = totalPrice.toFixed(2);
+                itemCountElement.textContent = itemCount; // Update item count
+            }
+
+            // Function to render cart items
+            function renderCartItems() {
+                cartItemsContainer.innerHTML = ""; // Clear the container
+                cart.forEach((item, index) => {
+                    const itemElement = document.createElement("div");
+                    itemElement.className = "cart-item";
+                    itemElement.innerHTML = `
+                        <div class="item-number">${index + 1}.</div> <!-- Item number -->
+                        <div class="item-details">
+                            <span class="font-name">${item.fontName}</span>
+                            <button class="explore-button" data-font="${item.fontName}">Explore ⟳</button> <!-- Explore button -->
+                            <span class="font-price">$${item.price.toFixed(2)}</span>
+                        </div>
+                        <div class="quantity-selector">
+                            <label for="quantity-${index}">Quantity:</label>
+                            <input type="number" id="quantity-${index}" class="quantity-input" min="0" value="${item.quantity}" data-index="${index}">
+                        </div>
+                        <div class="license-selection">
+                            <label for="license-${index}">Select License:</label>
+                            <select id="license-${index}" class="license-select" data-index="${index}">
+                                <option value="0" selected>Personal Use (Base Price)</option>
+                                <option value="50">Desktop - Up to 5 computers</option>
+                                <option value="90">Desktop - Up to 10 computers</option>
+                                <option value="150">Desktop - Up to 20 computers</option>
+                                <option value="250">Desktop - Up to 35 computers</option>
+                                <option value="350">Desktop - Up to 50 computers</option>
+                                <option value="600">Desktop - Up to 100 computers</option>
+                                <option value="1200">Desktop - Up to 250 computers</option>
+                                <option value="2000">Desktop - Up to 500 computers</option>
+                                <option value="contact">Desktop - More than 500 computers (Contact for pricing)</option>
+                                <option value="40">Web - Up to 25,000 monthly pageviews</option>
+                                <option value="70">Web - Up to 50,000 monthly pageviews</option>
+                                <option value="120">Web - Up to 100,000 monthly pageviews</option>
+                                <option value="200">Web - Up to 200,000 monthly pageviews</option>
+                                <option value="300">Web - Up to 500,000 monthly pageviews</option>
+                                <option value="500">Web - Up to 1,000,000 monthly pageviews</option>
+                                <option value="800">Web - Up to 5,000,000 monthly pageviews</option>
+                                <option value="1200">Web - Up to 10,000,000 monthly pageviews</option>
+                                <option value="1800">Web - Up to 25,000,000 monthly pageviews</option>
+                                <option value="2500">Web - Up to 50,000,000 monthly pageviews</option>
+                                <option value="4000">Web - Up to 100,000,000 monthly pageviews</option>
+                                <option value="contact">Web - More than 100,000,000 monthly pageviews (Contact for pricing)</option>
+                                <option value="60">Mobile App - 1 App</option>
+                                <option value="100">Mobile App - 2 Apps</option>
+                                <option value="150">Mobile App - 3 Apps</option>
+                                <option value="20">Ebook - Pricing per ebook or title</option>
+                                <option value="contact">Logotype - Contact for pricing</option>
+                                <option value="contact">TV/Cinema/Streaming - Contact for pricing</option>
+                                <option value="contact">Social Media - Contact for pricing</option>
+                                <option value="contact">Online Advertising - Contact for pricing</option>
+                                <option value="contact">Student - Contact for pricing</option>
+                            </select>
+                            <span class="license-price">+$0.00</span> <!-- Default value with + sign -->
+                        </div>
+                    `;
+                    cartItemsContainer.appendChild(itemElement);
+
+                    // Add event listener for quantity change
+                    const quantityInput = itemElement.querySelector(`#quantity-${index}`);
+                    quantityInput.addEventListener('change', () => {
+                        const newQuantity = parseInt(quantityInput.value);
+                        if (newQuantity === 0) {
+                            cart.splice(index, 1); // Remove item from cart
+                            updateCart();
+                            renderCartItems(); // Re-render the cart
+                        } else {
+                            item.quantity = newQuantity;
+                            updateCart();
+                            updateTotals();
+                        }
+                    });
+
+                    // Add event listener for license selection
+                    const licenseSelect = itemElement.querySelector(`#license-${index}`);
+                    const licensePriceElement = itemElement.querySelector('.license-price');
+
+                    licenseSelect.addEventListener('change', () => {
+                        if (licenseSelect.value === "contact") {
+                            licensePriceElement.textContent = "Contact for pricing";
+                            item.licensePrice = 0; // No additional price for "Contact for pricing"
+                            alert("Please contact us for pricing details for this license.");
+                        } else {
+                            const selectedPrice = parseFloat(licenseSelect.value);
+                            licensePriceElement.textContent = `+$${selectedPrice.toFixed(2)}`; // Add + sign
+                            item.licensePrice = selectedPrice; // Update the item's license price
+                        }
+                        updateCart();
+                        updateTotals();
+                    });
+
+                    // Initialize license price if it exists
+                    if (item.licensePrice) {
+                        licenseSelect.value = item.licensePrice;
+                        licensePriceElement.textContent = `+$${item.licensePrice.toFixed(2)}`; // Add + sign
+                    } else {
+                        // Default to Personal Use (Base Price)
+                        licenseSelect.value = 0;
+                        licensePriceElement.textContent = "+$0.00"; // Default value with + sign
+                    }
+
+                    // Add event listener for Explore button
+                    const exploreButton = itemElement.querySelector('.explore-button');
+                    exploreButton.addEventListener('click', () => {
+                        const fontName = exploreButton.getAttribute('data-font');
+                        alert(`Exploring ${fontName}`); // Replace with actual navigation logic
+                    });
+                });
+
+                // Update totals after rendering
+                updateTotals();
+            }
+
+            // Initial render of cart items
+            renderCartItems();
+
+            // Square Checkout Integration
+            const checkoutButton = document.getElementById("checkout-button");
+            checkoutButton.addEventListener("click", () => {
+                const payments = window.Square.payments(
+                    "sandbox-sq0idb-bT7DhuVJAUfmjdTt2l4O0Q", // Replace with your Square Sandbox Application ID
+                    "L4CVCS9X8T6SW" // Replace with your Square Location ID
+                );
+
+                payments.checkout({
+                    amount: totalPrice * 100, // Amount in cents
+                    currency: "USD",
+                    intent: "CHARGE",
+                }).then((response) => {
+                    if (response.status === "OK") {
+                        alert("Payment successful!");
+                        localStorage.removeItem("cart"); // Clear the cart after successful payment
+                        window.location.href = "index.html"; // Redirect to the homepage
+                    } else {
+                        alert("Payment failed. Please try again.");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
