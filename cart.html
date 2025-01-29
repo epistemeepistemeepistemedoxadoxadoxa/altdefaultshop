@@ -26,6 +26,10 @@
         </div>
         <div id="checkout-container">
             <form id="payment-form">
+                <div class="form-row">
+                    <input type="email" id="email-input" placeholder="Email address" required 
+                           class="w-full p-2 mb-4 border border-gray-300 rounded"/>
+                </div>
                 <div id="card-element"></div>
                 <div id="card-errors" role="alert"></div>
                 <button id="checkout-button" type="submit">
@@ -84,6 +88,7 @@
                 const button = document.getElementById('checkout-button');
                 const spinner = document.getElementById('spinner');
                 const buttonText = document.getElementById('button-text');
+                const emailInput = document.getElementById('email-input'); // Add this input to your form
 
                 button.disabled = true;
                 spinner.classList.remove('hidden');
@@ -98,6 +103,7 @@
                         },
                         body: JSON.stringify({
                             amount: Math.round(totalPrice * 100),
+                            email: emailInput.value, // Add the email
                             items: cart.map(item => ({
                                 fontName: item.fontName,
                                 quantity: item.quantity,
@@ -126,9 +132,28 @@
                     }
 
                     if (paymentIntent.status === 'succeeded') {
-                        localStorage.removeItem('cart');
-                        window.location.href = 'index.html';
+                        // Generate a download token
+                        try {
+                            const downloadResponse = await fetch('https://stripe-payment-backend-rtiu.onrender.com/generate-download', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    paymentIntentId: paymentIntent.id,
+                                    items: cart
+                                })
+                            });
+                            
+                            const downloadData = await downloadResponse.json();
+                            
+                            // Redirect to a success page with download links
+                            window.location.href = `success.html?token=${downloadData.token}`;
+                        } catch (error) {
+                            console.error('Error generating download link:', error);
+                        }
                     }
+
                 } catch (error) {
                     const errorElement = document.getElementById('card-errors');
                     errorElement.textContent = error.message;
