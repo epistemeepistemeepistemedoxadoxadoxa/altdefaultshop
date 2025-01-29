@@ -186,9 +186,10 @@ h1 {
 }
 
 #email-input {
+    border-top-width: 2px;
+    margin: 10px 10px 10px 0px;    /* This shorthand sets all margins as specified */
     width: 100%;
     padding: 10px;
-    margin-bottom: 20px;
     border: 1px solid #e5e5e5;
     font-size: 12px;
     font-family: sans-serif;
