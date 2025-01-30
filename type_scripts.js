@@ -174,6 +174,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (Math.random() < 0.1) {
                     delay *= 2;
                 }
+                // Auto-scroll to the end when adding text
+                const fontRow = element.closest('.font-row');
+                fontRow.scrollLeft = fontRow.scrollWidth;
             }
 
             // Update the span's innerHTML instead of the element's textContent

@@ -51,7 +51,7 @@ body {
 
 .font-row {
     display: flex;
-    align-items: center; /* Align items vertically in the center */
+    align-items: center;
     margin-bottom: 20px;
     padding: 10px;
     padding-top: 60px;
@@ -59,22 +59,23 @@ body {
     background: white;
     border-radius: 8px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    height: 140px; /* Set a fixed height to prevent vertical resizing */
-    position: relative; /* For proper overflow handling */
-    overflow-x: auto; /* Enable horizontal scrolling */
-    overflow-y: hidden; /* Prevent vertical scrolling */
+    height: 140px;
+    position: relative;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth; /* Enable smooth scrolling */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
+
 .font-sample {
-    flex: 1; /* Allow the type to take up available space */
-    white-space: nowrap; /* Prevent text from wrapping to the next line */
-    overflow-x: auto; /* Enable horizontal scrolling for the type */
-    overflow-y: hidden; /* Prevent vertical overflow */
+    flex: 1;
+    white-space: nowrap;
     font-size: 100px;
     cursor: pointer;
     transition: font-size 0.3s ease;
     outline: none;
-    margin-right: 20px; /* Add some space between the type and the controls */
+    margin-right: 20px;
 }
 
 .font-controls {
@@ -110,7 +111,13 @@ body {
 .size-display,
 .buy-button,
 .explore-button {
-    flex: 0 0 auto; /* Prevent these elements from growing or shrinking */
+    flex: 0 0 auto; /* Prevent these elements 
+    from growing or shrinking */
+    position: sticky;
+    right: 10px;
+    background: white;
+    z-index: 2;
+    margin-left: 10px;
 }
 
 
@@ -125,7 +132,6 @@ body {
     flex: 1; /* Allow slider to take available space */
     margin-right: 10px;
 }
-
 
 .size-display {
     font-size: 14px;
