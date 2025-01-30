@@ -51,24 +51,44 @@ body {
 
 .font-row {
     display: flex;
-    flex-wrap: wrap; /* Allow elements to wrap */
-    align-items: center;
+    align-items: center; /* Align items vertically in the center */
     margin-bottom: 20px;
     padding: 10px;
+    padding-top: 60px;
+    padding-bottom: 60px;
     background: white;
     border-radius: 8px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-
+    height: 140px; /* Set a fixed height to prevent vertical resizing */
+    position: relative; /* For proper overflow handling */
+    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-y: hidden; /* Prevent vertical scrolling */
 }
 
 .font-sample {
-    flex: 1 1 100%; /* Allow font sample to take full width on small screens */
+    flex: 1; /* Allow the type to take up available space */
+    white-space: nowrap; /* Prevent text from wrapping to the next line */
+    overflow-x: auto; /* Enable horizontal scrolling for the type */
+    overflow-y: hidden; /* Prevent vertical overflow */
     font-size: 100px;
     cursor: pointer;
     transition: font-size 0.3s ease;
     outline: none;
-    margin-bottom: 10px; /* Add space between font sample and other elements */
+    margin-right: 20px; /* Add some space between the type and the controls */
 }
+
+.font-controls {
+    flex: 0 0 auto; /* Prevent the controls from growing or shrinking */
+    display: flex;
+    align-items: center; /* Align controls vertically in the center */
+    gap: 10px; /* Add spacing between the controls */
+    position: sticky; /* Stick the controls to the right side */
+    right: 0; /* Align to the right edge of the row */
+    background: white; /* Ensure the controls are visible over the type */
+    z-index: 1; /* Ensure the controls are above the type */
+    padding-left: 10px; /* Add some padding to separate from the type */
+}
+
 
 .font-sample:hover::after {
     content: "";
@@ -86,12 +106,19 @@ body {
     text-align: left;
 }
 
+.size-adjuster,
+.size-display,
+.buy-button,
+.explore-button {
+    flex: 0 0 auto; /* Prevent these elements from growing or shrinking */
+}
+
 
 .size-adjuster {
-    display: flex;
-    align-items: center;
-    flex: 1 1 auto; /* Allow size adjuster to grow and shrink */
-    margin: 0 10px; /* Reduce margin for smaller screens */
+    flex: 0 0 auto; /* Don't grow or shrink */
+    margin: 0 10px;
+    position: relative;
+    z-index: 1;
 }
 
 .slider {
@@ -275,20 +302,16 @@ body {
         flex: 1 1 100%; /* Allow font sample to take full width */
     }
 
-    .size-adjuster {
-        width: 100%; /* Take full width */
-        margin: 10px 0; /* Adjust margin */
-    }
-
     .slider {
         width: 80%; /* Adjust slider width */
     }
 
     .buy-button,
     .explore-button {
-        width: auto; /* Allow buttons to size based on content */
-        min-width: 100px; /* Set a minimum width to maintain proportion */
-        margin: 0px; /* Adjust margin */
+        flex: 0 0 auto; /* Don't grow or shrink */
+        margin: 0 10px;
+        position: relative;
+        z-index: 1;
     }
 }
 
