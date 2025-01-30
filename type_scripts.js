@@ -118,6 +118,16 @@ document.addEventListener("DOMContentLoaded", () => {
         "Gabes Books",
         "Files_From_A_Computer",
         "Richmond to New York City",
+        "Analog",
+        "Radio",
+        "Iterative",
+        "Van de Graaf",
+        "Synthesis",
+        "Rainbow",
+        "Hardware",
+        "ARTIKULATION",
+        "RGBa",
+        "Robert Smithson  American Artist",
       ];
       
       
