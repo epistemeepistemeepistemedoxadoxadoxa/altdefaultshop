@@ -200,6 +200,7 @@ body {
     font-weight: normal;
     font-style: normal;
     font-display: swap;
+    text-transform:capitalize;
 }
 
 
