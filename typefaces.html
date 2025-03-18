@@ -12,7 +12,6 @@
     <div class="nav">
         <a href="index.html">Documentation</a>
         <a href="typefaces.html">Typefaces</a>
-        <a href="cart.html">Bag</a>
     </div>
 
     <!-- Add the new <p> tag here -->
@@ -242,6 +241,69 @@
 
     <script src="type_scripts.js"></script>
     <script src="font_protection.js"></script> <!-- Link to the new JavaScript file -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Font size adjustment and other existing functionality
+        const sliders = document.querySelectorAll('.slider');
+        sliders.forEach(slider => {
+            const sizeDisplay = slider.parentElement.querySelector('.size-display');
+            slider.addEventListener('input', function() {
+                const fontSample = this.closest('.font-row').querySelector('.font-sample');
+                fontSample.style.fontSize = this.value + 'px';
+                sizeDisplay.textContent = this.value + ' px';
+            });
+            // Initialize font size
+            const fontSample = slider.closest('.font-row').querySelector('.font-sample');
+            fontSample.style.fontSize = slider.value + 'px';
+            sizeDisplay.textContent = slider.value + ' px';
+        });
+
+        // Explore button functionality (keep existing)
+        const exploreButtons = document.querySelectorAll('.explore-button');
+        exploreButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const link = this.getAttribute('data-link');
+                if (link) {
+                    window.open(link, '_blank');
+                }
+            });
+        });
+
+        // Gumroad links for each font
+        const gumroadLinks = {
+            'AltDefHelvCond': 'https://parkwestnyc.gumroad.com/l/tzvfd',
+            'Bibli': 'https://parkwestnyc.gumroad.com/l/yoyza',
+            'Comm Alt': 'https://parkwestnyc.gumroad.com/l/pcrec',
+            'Dash Dot': 'https://parkwestnyc.gumroad.com/l/izsgp',
+            'EttaEXP': 'https://parkwestnyc.gumroad.com/l/riygb',
+            'MetaballTimes': 'https://parkwestnyc.gumroad.com/l/vvahec',
+            'Metaballvetica Neue': 'https://parkwestnyc.gumroad.com/l/lpomq',
+            'Mond Cluster': 'https://parkwestnyc.gumroad.com/l/rtxts',
+            'MonolineColant': 'https://parkwestnyc.gumroad.com/l/kcmgk',
+            'OCR Optima': 'https://parkwestnyc.gumroad.com/l/xhuerb',
+            'Pixel Brukt': 'https://parkwestnyc.gumroad.com/l/gjewn',
+            'Serif Diamond': 'https://parkwestnyc.gumroad.com/l/tsdthx',
+            'Star Block': 'https://parkwestnyc.gumroad.com/l/csjnpa',
+            'Tac3': 'https://parkwestnyc.gumroad.com/l/ulcvri',
+            'Yor': 'https://parkwestnyc.gumroad.com/l/fgyjq'
+        };
+
+        // Update Buy buttons to open Gumroad links
+        const buyButtons = document.querySelectorAll('.buy-button');
+        buyButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const fontName = this.getAttribute('data-font');
+                const gumroadLink = gumroadLinks[fontName];
+                
+                if (gumroadLink) {
+                    window.open(gumroadLink, '_blank');
+                } else {
+                    console.error('No Gumroad link found for font:', fontName);
+                }
+            });
+        });
+    });
+    </script>
 </body>
 
 </html>

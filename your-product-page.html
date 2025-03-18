@@ -1,0 +1,20 @@
+<!-- Add this script to your page (preferably before closing body tag) -->
+<script src="https://gumroad.com/js/gumroad.js"></script>
+
+<!-- Replace existing checkout button/system with this simple link -->
+<a class="gumroad-button" 
+   href="https://gumroad.com/l/YOUR_PRODUCT_ID" 
+   data-gumroad-single-product="true"
+   data-gumroad-product-id="YOUR_PRODUCT_ID" 
+   data-gumroad-product-permalink="https://gumroad.com/l/YOUR_PRODUCT_ID"
+   data-gumroad-overlay-logo="true">
+   Buy Now ($XX)
+</a>
+
+<!-- Replace your checkout form with this embed -->
+<div class="gumroad-product-embed">
+  <a href="https://gumroad.com/l/YOUR_PRODUCT_ID">Loading...</a>
+</div>
+<script src="https://gumroad.com/js/gumroad-embed.js"></script>
+
+<!-- You can remove all your existing payment processing code, backend payment logic, etc. --> 

@@ -1,0 +1,14 @@
+.gumroad-button {
+  background-color: #ff90e8;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 4px;
+  display: inline-block;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.gumroad-button:hover {
+  background-color: #ff5bde;
+} 

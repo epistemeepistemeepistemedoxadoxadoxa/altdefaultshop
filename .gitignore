@@ -1,0 +1,38 @@
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Environment variables
+.env
+server/.env
+
+# Environment variables with real values
+.env.local
+server/.env.local
+
+# macOS
+.DS_Store
+
+# Logs
+logs
+*.log
+
+# Fonts directory (contains purchasable content)
+server/fonts/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Build files
+/dist
+/build 
